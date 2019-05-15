@@ -1,7 +1,7 @@
 {
   "name": "thorin-plugin-cluster-kube",
   "author": "UNLOQ Systems",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {},
   "description": "Thorin.js cluster plugin for microservice communication within a kubernetes environment",
   "main": "index.js",
