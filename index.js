@@ -27,6 +27,19 @@ module.exports = function (thorin, opt, pluginName) {
     logger.warn(`cluster-kube: working without service authentication (no token present)`);
   }
 
+  /* Manually override the ports of services */
+  pluginObj.setPorts = (ports) => {
+    if (typeof ports === 'object' && ports && Object.keys(ports).length > 0) {
+      if (typeof ports['_all'] === 'undefined' && typeof opt.port === 'object' && opt.port && opt.port._all) {
+        ports['_all'] = opt.port._all;
+      }
+      opt.port = ports;
+    }
+  };
+  pluginObj.getPorts = () => {
+    return opt.port;
+  };
+
   initClient(thorin, opt, pluginObj);
   return pluginObj;
 };
