@@ -1,13 +1,15 @@
 'use strict';
 
-const initClient = require('./lib/client');
+const initClient = require('./lib/clusterClient'),
+  initProxy = require('./lib/proxy');
 
 /**
  * Cluster plugin for microservice communication within a kube cluster
  */
-module.exports = function (thorin, opt, pluginName) {
+module.exports = function init(thorin, opt, pluginName) {
   opt = thorin.util.extend({
     logger: pluginName || 'cluster',
+    debug: false,
     service: {
       type: thorin.app,
       name: thorin.id
@@ -19,28 +21,16 @@ module.exports = function (thorin, opt, pluginName) {
       _all: 8080              // A map with {serviceName:port} for any registered services.
     },                             // The default microservice port
     path: '/',                       // The default microservice dispatch path
-    timeout: 40000                  // The max timeout to use.
+    timeout: 20000                  // The max timeout to use.
   }, opt);
   const logger = thorin.logger(opt.logger),
-    pluginObj = {};
+    ClusterClient = initClient(thorin, opt);
   if (!opt.token) {
-    logger.warn(`cluster-kube: working without service authentication (no token present)`);
+    logger.warn(`Thorin-cluster-kube: working without service authentication (no token present)`);
   }
+  let pluginObj = new ClusterClient();
+  initProxy(thorin, opt, pluginObj);
 
-  /* Manually override the ports of services */
-  pluginObj.setPorts = (ports) => {
-    if (typeof ports === 'object' && ports && Object.keys(ports).length > 0) {
-      if (typeof ports['_all'] === 'undefined' && typeof opt.port === 'object' && opt.port && opt.port._all) {
-        ports['_all'] = opt.port._all;
-      }
-      opt.port = ports;
-    }
-  };
-  pluginObj.getPorts = () => {
-    return opt.port;
-  };
-
-  initClient(thorin, opt, pluginObj);
   return pluginObj;
 };
 module.exports.publicName = 'cluster';
