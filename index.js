@@ -17,6 +17,8 @@ module.exports = function init(thorin, opt, pluginName) {
     token: process.env.CLUSTER_TOKEN || null, // A shared verification token used for auth
     namespace: 'svc.cluster.local',         // The kube namespace name
     protocol: 'http',               // The default protocol for all communication
+    alias: {  // aliases for services.
+    },
     port: {
       _all: 8080              // A map with {serviceName:port} for any registered services.
     },                             // The default microservice port
