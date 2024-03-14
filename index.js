@@ -15,6 +15,7 @@ module.exports = function init(thorin, opt, pluginName) {
       name: thorin.id
     },       // this is the service name
     token: process.env.CLUSTER_TOKEN || null, // A shared verification token used for auth
+    tokenHeader: 'x-cluster-token',         // The HTTP header to place the auth token in
     namespace: 'svc.cluster.local',         // The kube namespace name
     protocol: 'http',               // The default protocol for all communication
     alias: {  // aliases for services.
